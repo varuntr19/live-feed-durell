@@ -1,8 +1,7 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const cameraSelect = document.getElementById("cameraSelect");
-const startBtn = document.getElementById("startBtn");
-const stopBtn = document.getElementById("stopBtn");
+const toggleBtn = document.getElementById("toggleBtn");
 const flipBtn = document.getElementById("flipBtn");
 const snapshotBtn = document.getElementById("snapshotBtn");
 const statusEl = document.getElementById("status");
@@ -10,6 +9,16 @@ const snapshotsEl = document.getElementById("snapshots");
 
 let currentStream = null;
 let currentFacingMode = null;
+let statusTimeout = null;
+
+function showStatus(text, { sticky = false } = {}) {
+  statusEl.textContent = text;
+  statusEl.classList.add("visible");
+  clearTimeout(statusTimeout);
+  if (!sticky) {
+    statusTimeout = setTimeout(() => statusEl.classList.remove("visible"), 2500);
+  }
+}
 
 function stopTracksOnly() {
   if (currentStream) {
@@ -33,6 +42,9 @@ async function listCameras() {
     option.textContent = cam.label || `Camera ${i + 1}`;
     cameraSelect.appendChild(option);
   });
+  // Only show the picker when it's actually useful (e.g. multiple laptop webcams);
+  // front/back on phones is handled by the flip button instead.
+  cameraSelect.hidden = cameras.length < 2;
 }
 
 async function startCamera({ facingMode } = {}) {
@@ -53,13 +65,13 @@ async function startCamera({ facingMode } = {}) {
     await listCameras();
     if (settings.deviceId) cameraSelect.value = settings.deviceId;
 
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
+    toggleBtn.textContent = "Stop";
+    toggleBtn.title = "Stop camera";
     flipBtn.disabled = false;
     snapshotBtn.disabled = false;
-    statusEl.textContent = "Camera live.";
+    showStatus("Camera live.");
   } catch (err) {
-    statusEl.textContent = `Could not access camera: ${err.message}`;
+    showStatus(`Could not access camera: ${err.message}`, { sticky: true });
   }
 }
 
@@ -67,11 +79,19 @@ function stopCamera() {
   stopTracksOnly();
   video.srcObject = null;
 
-  startBtn.disabled = false;
-  stopBtn.disabled = true;
+  toggleBtn.textContent = "Start";
+  toggleBtn.title = "Start camera";
   flipBtn.disabled = true;
   snapshotBtn.disabled = true;
-  statusEl.textContent = "Camera stopped.";
+  showStatus("Camera stopped.");
+}
+
+function toggleCamera() {
+  if (currentStream) {
+    stopCamera();
+  } else {
+    startCamera();
+  }
 }
 
 function flipCamera() {
@@ -92,10 +112,10 @@ function takeSnapshot() {
   const img = document.createElement("img");
   img.src = canvas.toDataURL("image/png");
   snapshotsEl.prepend(img);
+  showStatus("Snapshot saved.");
 }
 
-startBtn.addEventListener("click", () => startCamera());
-stopBtn.addEventListener("click", stopCamera);
+toggleBtn.addEventListener("click", toggleCamera);
 flipBtn.addEventListener("click", flipCamera);
 snapshotBtn.addEventListener("click", takeSnapshot);
 cameraSelect.addEventListener("change", () => {
@@ -108,11 +128,11 @@ navigator.mediaDevices
     if (devices.some((d) => d.kind === "videoinput")) {
       listCameras();
     } else {
-      statusEl.textContent = "No camera found on this device.";
-      startBtn.disabled = true;
+      showStatus("No camera found on this device.", { sticky: true });
+      toggleBtn.disabled = true;
     }
   })
   .catch(() => {
-    statusEl.textContent = "Camera access is not available in this browser.";
-    startBtn.disabled = true;
+    showStatus("Camera access is not available in this browser.", { sticky: true });
+    toggleBtn.disabled = true;
   });
