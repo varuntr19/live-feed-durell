@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Feed</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <h1>Live Feed</h1>
+
+    <div class="video-wrap">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="canvas" hidden></canvas>
+    </div>
+
+    <div class="controls">
+      <select id="cameraSelect"></select>
+      <button id="startBtn">Start</button>
+      <button id="stopBtn" disabled>Stop</button>
+      <button id="snapshotBtn" disabled>Snapshot</button>
+    </div>
+
+    <p id="status">Camera stopped.</p>
+
+    <div id="snapshots"></div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
