@@ -1,0 +1,146 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #000;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* mirror, matches how the fingertip tracking is mapped */
+  background: #000;
+}
+
+#drawCanvas,
+#cursorCanvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.toolbar {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  background: rgba(20, 20, 20, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+  z-index: 10;
+}
+
+.swatch {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  background: var(--swatch-color);
+  cursor: pointer;
+  padding: 0;
+}
+
+.swatch.active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4);
+}
+
+.toolbar button:not(.swatch) {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #f2f2f2;
+  font-size: 0.85rem;
+  padding: 8px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toolbar button:not(.swatch):hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+#eraserBtn.active {
+  background: rgba(255, 255, 255, 0.35);
+  color: #111;
+  font-weight: 600;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  text-align: center;
+  padding: 32px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #f2f2f2;
+  z-index: 20;
+}
+
+.overlay.hidden {
+  display: none;
+}
+
+.overlay h1 {
+  margin: 0;
+  font-size: 2.2rem;
+}
+
+.overlay p {
+  max-width: 340px;
+  color: #ccc;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.overlay button {
+  border: none;
+  background: #f2f2f2;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 12px 32px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.overlay button:hover {
+  background: #fff;
+}
+
+@media (max-width: 480px) {
+  .toolbar {
+    gap: 6px;
+    padding: 6px;
+  }
+
+  .swatch {
+    width: 24px;
+    height: 24px;
+  }
+
+  .toolbar button:not(.swatch) {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+  }
+}
