@@ -4,14 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Live Feed</title>
-<link rel="stylesheet" href="style.css?v=3">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
+  <svg style="position: absolute; width: 0; height: 0; overflow: hidden" aria-hidden="true">
+    <filter id="glass-distortion">
+      <feTurbulence type="fractalNoise" baseFrequency="0.008 0.008" numOctaves="2" seed="92" result="noise" />
+      <feGaussianBlur in="noise" stdDeviation="2" result="blurred" />
+      <feDisplacementMap in="SourceGraphic" in2="blurred" scale="60" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
   <video id="video" autoplay playsinline muted></video>
   <canvas id="canvas" hidden></canvas>
 
   <div class="toolbar">
     <select id="cameraSelect" title="Camera" hidden></select>
+    <select id="filterSelect" title="Filter"></select>
     <button id="toggleBtn" title="Start camera">Start</button>
     <button id="flipBtn" title="Flip camera" disabled>Flip</button>
     <button id="snapshotBtn" title="Take snapshot" disabled>Snap</button>
@@ -20,7 +29,17 @@
   <div id="status" class="toast"></div>
 
   <div id="snapshots" class="snapshot-strip"></div>
+  <div id="stamps" class="snapshot-strip stamps-strip"></div>
 
-  <script src="app.js?v=2"></script>
+  <div id="stampOverlay" class="stamp-overlay" hidden>
+    <button id="stampCloseBtn" class="stamp-close" title="Cancel">✕</button>
+    <div class="stamp-overlay-inner">
+      <img id="stampSourceImg" alt="Tap the element you want to turn into a stamp">
+      <p id="stampHint" class="stamp-hint">Tap the thing you want as your stamp</p>
+    </div>
+  </div>
+
+  <script src="app.js?v=3"></script>
+  <script type="module" src="stamp.js?v=1"></script>
 </body>
 </html>
