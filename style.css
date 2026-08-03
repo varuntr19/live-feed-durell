@@ -37,7 +37,10 @@ video {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transform: scaleX(-1); /* mirror, like a webcam preview */
+}
+
+video.mirror {
+  transform: scaleX(-1); /* mirror front-facing cameras, like a webcam preview */
 }
 
 .controls {
@@ -83,4 +86,25 @@ button:not(:disabled):hover, select:hover {
   width: 140px;
   border-radius: 6px;
   border: 1px solid #333;
+}
+
+@media (max-width: 480px) {
+  main {
+    padding: 16px;
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .controls {
+    gap: 10px;
+  }
+
+  select, button {
+    flex: 1 1 calc(50% - 5px);
+    padding: 12px 10px;
+    font-size: 1rem;
+  }
+
+  #snapshots img {
+    width: calc(50% - 5px);
+  }
 }
