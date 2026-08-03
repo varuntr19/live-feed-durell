@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Finger Draw</title>
+<link rel="stylesheet" href="style.css?v=1">
+</head>
+<body>
+  <video id="video" autoplay playsinline muted></video>
+  <canvas id="drawCanvas"></canvas>
+  <canvas id="cursorCanvas"></canvas>
+
+  <div class="toolbar">
+    <button class="swatch" data-color="#ff3b30" style="--swatch-color:#ff3b30"></button>
+    <button class="swatch" data-color="#ffcc00" style="--swatch-color:#ffcc00"></button>
+    <button class="swatch" data-color="#34c759" style="--swatch-color:#34c759"></button>
+    <button class="swatch" data-color="#0a84ff" style="--swatch-color:#0a84ff"></button>
+    <button class="swatch" data-color="#ffffff" style="--swatch-color:#ffffff"></button>
+    <button id="eraserBtn" title="Eraser">Erase</button>
+    <button id="clearBtn" title="Clear canvas">Clear</button>
+  </div>
+
+  <div id="overlay" class="overlay">
+    <h1>Finger Draw</h1>
+    <p>
+      Allow camera access, then pinch your thumb and index finger
+      together to draw on the video feed. Release the pinch to move
+      without drawing.
+    </p>
+    <button id="overlayBtn">Start</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
+  <script src="draw.js?v=1"></script>
+</body>
+</html>
