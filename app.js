@@ -1,15 +1,30 @@
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 const cameraSelect = document.getElementById("cameraSelect");
+const filterSelect = document.getElementById("filterSelect");
 const toggleBtn = document.getElementById("toggleBtn");
 const flipBtn = document.getElementById("flipBtn");
 const snapshotBtn = document.getElementById("snapshotBtn");
 const statusEl = document.getElementById("status");
 const snapshotsEl = document.getElementById("snapshots");
 
+const FILTERS = [
+  { name: "Normal", css: "none" },
+  { name: "Noir", css: "grayscale(1) contrast(1.3) brightness(0.9)" },
+  { name: "Mono", css: "grayscale(1)" },
+  { name: "Sepia", css: "sepia(0.75) saturate(1.3) contrast(1.05)" },
+  { name: "Vintage", css: "sepia(0.35) contrast(1.1) brightness(1.05) saturate(1.35)" },
+  { name: "Cool", css: "hue-rotate(180deg) saturate(1.4)" },
+  { name: "Warm", css: "hue-rotate(-20deg) saturate(1.3) brightness(1.05)" },
+  { name: "Vivid", css: "saturate(2) contrast(1.15)" },
+  { name: "Dream", css: "brightness(1.1) contrast(0.9) saturate(1.2) blur(0.5px)" },
+  { name: "Invert", css: "invert(1)" },
+];
+
 let currentStream = null;
 let currentFacingMode = null;
 let statusTimeout = null;
+let currentFilterCss = FILTERS[0].css;
 
 function showStatus(text, { sticky = false } = {}) {
   statusEl.textContent = text;
@@ -18,6 +33,21 @@ function showStatus(text, { sticky = false } = {}) {
   if (!sticky) {
     statusTimeout = setTimeout(() => statusEl.classList.remove("visible"), 2500);
   }
+}
+
+function populateFilters() {
+  FILTERS.forEach((filter, i) => {
+    const option = document.createElement("option");
+    option.value = i;
+    option.textContent = filter.name;
+    filterSelect.appendChild(option);
+  });
+}
+populateFilters();
+
+function applyFilter(index) {
+  currentFilterCss = FILTERS[index].css;
+  video.style.filter = currentFilterCss;
 }
 
 function stopTracksOnly() {
@@ -103,6 +133,7 @@ function takeSnapshot() {
   canvas.width = video.videoWidth;
   canvas.height = video.videoHeight;
   const ctx = canvas.getContext("2d");
+  ctx.filter = currentFilterCss; // bake the active filter into the snapshot
   if (video.classList.contains("mirror")) {
     ctx.translate(canvas.width, 0);
     ctx.scale(-1, 1); // match the mirrored preview
@@ -111,8 +142,9 @@ function takeSnapshot() {
 
   const img = document.createElement("img");
   img.src = canvas.toDataURL("image/png");
+  img.title = "Tap to turn into a stamp";
   snapshotsEl.prepend(img);
-  showStatus("Snapshot saved.");
+  showStatus("Snapshot saved — tap it to make a stamp.");
 }
 
 toggleBtn.addEventListener("click", toggleCamera);
@@ -121,6 +153,7 @@ snapshotBtn.addEventListener("click", takeSnapshot);
 cameraSelect.addEventListener("change", () => {
   if (currentStream) startCamera();
 });
+filterSelect.addEventListener("change", () => applyFilter(filterSelect.value));
 
 navigator.mediaDevices
   .enumerateDevices()

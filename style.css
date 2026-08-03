@@ -24,23 +24,31 @@ video.mirror {
   transform: scaleX(-1); /* mirror front-facing cameras, like a webcam preview */
 }
 
-/* Liquid glass: a bright, saturated, blurred material with a bevelled
-   highlight on top and a soft shadow underneath, so it reads as a
-   translucent physical layer floating over whatever the camera sees. */
+/* Apple-style Liquid Glass: closer to the real material than a heavy
+   frosted tint -- mostly clear (low-opacity tint), letting saturated
+   blur do the work, with a thin bright top edge and a tight, soft
+   shadow instead of a big drop shadow. Where the browser supports it,
+   an SVG turbulence/displacement filter adds a subtle refraction so
+   the background actually bends through the glass instead of just
+   blurring flatly. */
 .toolbar,
 .toast {
-  background: linear-gradient(
-    to bottom,
-    rgba(255, 255, 255, 0.22),
-    rgba(255, 255, 255, 0.1)
-  );
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow:
-    0 8px 30px rgba(0, 0, 0, 0.35),
-    inset 0 1px 1px rgba(255, 255, 255, 0.6),
-    inset 0 -1px 1px rgba(0, 0, 0, 0.12);
+    0 4px 16px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+}
+
+@supports (backdrop-filter: url(#glass-distortion)) {
+  .toolbar,
+  .toast {
+    backdrop-filter: url(#glass-distortion) blur(6px) saturate(180%);
+    -webkit-backdrop-filter: url(#glass-distortion) blur(6px) saturate(180%);
+  }
 }
 
 .toolbar {
@@ -133,6 +141,85 @@ video.mirror {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+}
+
+.stamps-strip {
+  bottom: calc(max(16px, env(safe-area-inset-bottom)) + 88px);
+}
+
+.stamp-link {
+  display: inline-block;
+  flex: 0 0 auto;
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform 0.15s ease;
+}
+
+.stamp-link:active {
+  transform: rotate(var(--tilt, 0deg)) scale(0.94);
+}
+
+.stamp-link img {
+  height: 84px;
+  width: auto;
+  border-radius: 2px;
+  display: block;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+.stamp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.82);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stamp-overlay[hidden] {
+  display: none;
+}
+
+.stamp-overlay-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  max-width: min(92vw, 640px);
+  max-height: 92vh;
+  padding: 0 16px;
+}
+
+.stamp-overlay-inner img {
+  max-width: 100%;
+  max-height: 78vh;
+  border-radius: 12px;
+  cursor: crosshair;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+}
+
+.stamp-hint {
+  color: #fff;
+  font-size: 0.9rem;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  margin: 0;
+}
+
+.stamp-close {
+  position: fixed;
+  top: max(16px, env(safe-area-inset-top));
+  right: max(16px, env(safe-area-inset-right));
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 21;
 }
 
 @media (max-width: 480px) {
