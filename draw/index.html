@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Finger Draw</title>
-<link rel="stylesheet" href="style.css?v=1">
+<link rel="stylesheet" href="style.css?v=2">
 </head>
 <body>
   <video id="video" autoplay playsinline muted></video>
@@ -22,16 +22,18 @@
   </div>
 
   <div id="overlay" class="overlay">
-    <h1>Finger Draw</h1>
-    <p>
-      Allow camera access, then pinch your thumb and index finger
-      together to draw on the video feed. Release the pinch to move
-      without drawing.
-    </p>
-    <button id="overlayBtn">Start</button>
+    <div class="overlay-card">
+      <h1>Finger Draw</h1>
+      <p>
+        Allow camera access, then pinch your thumb and index finger
+        together to draw on the video feed. Release the pinch to move
+        without drawing.
+      </p>
+      <button id="overlayBtn">Start</button>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/hands.js" crossorigin="anonymous"></script>
-  <script src="draw.js?v=1"></script>
+  <script src="draw.js?v=2"></script>
 </body>
 </html>
